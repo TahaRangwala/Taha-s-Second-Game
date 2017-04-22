@@ -2,10 +2,12 @@ package States;
 
 import java.awt.Graphics;
 
-public class SettingState {
+import Main.Game;
 
-	public SettingState(){
-		
+public class SettingState extends State{
+
+	public SettingState(Game game){
+		super(game);
 	}
 
 	public void tick() {
