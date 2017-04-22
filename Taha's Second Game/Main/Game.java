@@ -1,12 +1,13 @@
 package Main;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import Display.Display;
+import gfx.Assets;
 import gfx.ImageLoader;
+import gfx.SpriteSheet;
 
 public class Game implements Runnable{
 
@@ -19,8 +20,6 @@ public class Game implements Runnable{
 	
 	private BufferStrategy bs;
 	private Graphics g;
-	
-	private BufferedImage test;
 		
 	public Game(String title, int width, int height){
 		this.width = width;
@@ -30,11 +29,13 @@ public class Game implements Runnable{
 	
 	private void init(){
 		display = new Display(title,width,height);
-		test = ImageLoader.loadImage("/textures/sheet.PNG");
+		Assets.init();
 	}
 	
+	int x = 0;
+	
 	private void tick(){
-		
+		x+=1;
 	}
 	
 	private void render(){
@@ -48,7 +49,7 @@ public class Game implements Runnable{
 		g.clearRect(0,0,width,height);
 		
 		//begin drawing
-		
+		g.drawImage(Assets.grass,x,10,null);
 		//end drawing
 		bs.show();
 		g.dispose();
@@ -56,9 +57,33 @@ public class Game implements Runnable{
 
 	public void run() {
 		init();
+		
+		int fps = 60;
+		double timePerTick = 1000000000/fps;
+		double delta = 0;
+		long now;
+		long lastTime = System.nanoTime();
+		long timer = 0;
+		int ticks = 0;
+		
 		while(running){
-			tick();
-			render();
+			now = System.nanoTime();
+			delta += (now - lastTime) / timePerTick;
+			timer += now - lastTime;
+			lastTime = now;
+			
+			if(delta >= 1){
+				tick();
+				render();
+				ticks++;
+				delta--;
+			}
+			
+			if(timer >= 1000000000){
+				System.out.println("FPS: " + ticks);
+				ticks = 0;
+				timer = 0;
+			}
 		}
 		stop();
 	}
