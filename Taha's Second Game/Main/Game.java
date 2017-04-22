@@ -4,15 +4,16 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import Display.Display;
+import gfx.Assets;
+import Input.KeyManager;
 import States.GameState;
 import States.MenuState;
 import States.State;
-import gfx.Assets;
 
-public class Game implements Runnable{
+public class Game implements Runnable {
 
 	private Display display;
-	private int width, height;
+	public int width, height;
 	public String title;
 	
 	private boolean running = false;
@@ -24,15 +25,20 @@ public class Game implements Runnable{
 	//States
 	private State gameState;
 	private State menuState;
-		
+	
+	//Input
+	private KeyManager keyManager;
+	
 	public Game(String title, int width, int height){
 		this.width = width;
 		this.height = height;
 		this.title = title;
+		keyManager = new KeyManager();
 	}
 	
 	private void init(){
-		display = new Display(title,width,height);
+		display = new Display(title, width, height);
+		display.getFrame().addKeyListener(keyManager);
 		Assets.init();
 		
 		gameState = new GameState(this);
@@ -41,6 +47,8 @@ public class Game implements Runnable{
 	}
 	
 	private void tick(){
+		keyManager.tick();
+		
 		if(State.getState() != null)
 			State.getState().tick();
 	}
@@ -52,23 +60,24 @@ public class Game implements Runnable{
 			return;
 		}
 		g = bs.getDrawGraphics();
-		//clear screen
-		g.clearRect(0,0,width,height);
+		//Clear Screen
+		g.clearRect(0, 0, width, height);
+		//Draw Here!
 		
-		//begin drawing
 		if(State.getState() != null)
 			State.getState().render(g);
 		
-		//end drawing
+		//End Drawing!
 		bs.show();
 		g.dispose();
 	}
-
-	public void run() {
+	
+	public void run(){
+		
 		init();
 		
 		int fps = 60;
-		double timePerTick = 1000000000/fps;
+		double timePerTick = 1000000000 / fps;
 		double delta = 0;
 		long now;
 		long lastTime = System.nanoTime();
@@ -94,7 +103,13 @@ public class Game implements Runnable{
 				timer = 0;
 			}
 		}
+		
 		stop();
+		
+	}
+	
+	public KeyManager getKeyManager(){
+		return keyManager;
 	}
 	
 	public synchronized void start(){
@@ -109,11 +124,10 @@ public class Game implements Runnable{
 		if(!running)
 			return;
 		running = false;
-		try{
+		try {
 			thread.join();
-		}
-		catch(Exception E){
-			E.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
