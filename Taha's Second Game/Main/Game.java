@@ -1,5 +1,6 @@
 package Main;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
@@ -38,8 +39,15 @@ public class Game implements Runnable{
 			return;
 		}
 		g = bs.getDrawGraphics();
-		//draw here
-		g.fillRect(0,0,width,height);
+		//clear screen
+		g.clearRect(0,0,width,height);
+		
+		//begin drawing
+		g.setColor(Color.RED);
+		g.fillRect(10, 50, 50, 70);
+		g.setColor(Color.GREEN);
+		g.fillRect(0, 0, 10,10);
+		
 		//end drawing
 		bs.show();
 		g.dispose();
