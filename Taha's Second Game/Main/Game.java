@@ -2,12 +2,12 @@ package Main;
 
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import Display.Display;
+import States.GameState;
+import States.MenuState;
+import States.State;
 import gfx.Assets;
-import gfx.ImageLoader;
-import gfx.SpriteSheet;
 
 public class Game implements Runnable{
 
@@ -20,6 +20,10 @@ public class Game implements Runnable{
 	
 	private BufferStrategy bs;
 	private Graphics g;
+	
+	//States
+	private State gameState;
+	private State menuState;
 		
 	public Game(String title, int width, int height){
 		this.width = width;
@@ -30,12 +34,15 @@ public class Game implements Runnable{
 	private void init(){
 		display = new Display(title,width,height);
 		Assets.init();
+		
+		gameState = new GameState();
+		menuState = new MenuState();
+		State.setState(gameState);
 	}
 	
-	int x = 0;
-	
 	private void tick(){
-		x+=1;
+		if(State.getState() != null)
+			State.getState().tick();
 	}
 	
 	private void render(){
@@ -49,7 +56,9 @@ public class Game implements Runnable{
 		g.clearRect(0,0,width,height);
 		
 		//begin drawing
-		g.drawImage(Assets.grass,x,10,null);
+		if(State.getState() != null)
+			State.getState().render(g);
+		
 		//end drawing
 		bs.show();
 		g.dispose();
