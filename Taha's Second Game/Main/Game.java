@@ -20,8 +20,8 @@ public class Game implements Runnable{
 	private BufferStrategy bs;
 	private Graphics g;
 	
-	private BufferedImage testImage;
-	
+	private BufferedImage test;
+		
 	public Game(String title, int width, int height){
 		this.width = width;
 		this.height = height;
@@ -30,7 +30,7 @@ public class Game implements Runnable{
 	
 	private void init(){
 		display = new Display(title,width,height);
-		testImage = ImageLoader.loadImage("/res/Final Senior Picture.jpg");
+		test = ImageLoader.loadImage("/textures/sheet.PNG");
 	}
 	
 	private void tick(){
@@ -48,7 +48,6 @@ public class Game implements Runnable{
 		g.clearRect(0,0,width,height);
 		
 		//begin drawing
-		g.drawImage(testImage,20,20,null);
 		
 		//end drawing
 		bs.show();
