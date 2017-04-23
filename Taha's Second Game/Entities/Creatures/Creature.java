@@ -1,7 +1,8 @@
 package Entities.Creatures;
 
 import Entities.Entity;
-import Main.Game;
+import Main.Handler;
+import Tiles.Tile;
 
 public abstract class Creature extends Entity{
 
@@ -13,8 +14,8 @@ public abstract class Creature extends Entity{
 	protected float speed;
 	protected float xMove, yMove;
 	
-	public Creature(Game game,float x, float y, int width, int height) {
-		super(game, x, y, width, height);
+	public Creature(Handler handler,float x, float y, int width, int height) {
+		super(handler, x, y, width, height);
 		health = DEFAULT_HEALTH;
 		speed = DEFAULT_SPEED;
 		xMove = 0;
@@ -22,8 +23,51 @@ public abstract class Creature extends Entity{
 	}
 	
 	public void move(){
-		x += xMove;
-		y += yMove;
+		moveX();
+		moveY();
+	}
+	
+	public void moveX(){
+		if(xMove > 0){//moving right
+			int tx = (int)(x + xMove + bounds.x + bounds.width) / Tile.TILEWIDTH;
+			if(!collisionWithTile(tx,(int)(y + bounds.y) / Tile.TILEHEIGHT)
+			&& !collisionWithTile(tx, (int) (y + bounds.y + bounds.height) / Tile.TILEHEIGHT)){
+				x += xMove;
+			}
+			else{
+				x = tx * Tile.TILEWIDTH;
+			}
+		}
+		else if(xMove < 0){//moving left
+			int tx = (int)(x + xMove + bounds.x) / Tile.TILEWIDTH;
+			if(!collisionWithTile(tx,(int)(y + bounds.y) / Tile.TILEHEIGHT)
+			&& !collisionWithTile(tx, (int) (y + bounds.y + bounds.height) / Tile.TILEHEIGHT)){
+				x += xMove;
+			}
+		}
+	}
+	
+	public void moveY(){
+		if(yMove < 0){
+			int ty = (int)(y + yMove + bounds.y) / Tile.TILEHEIGHT;
+			
+			if(!collisionWithTile((int) (x + bounds.x) / Tile.TILEWIDTH, ty) &&
+			!collisionWithTile((int) (x + bounds.x + bounds.width) / Tile.TILEWIDTH, ty)){
+				y+=yMove;
+			}
+		}
+		else if(yMove > 0){
+			int ty = (int)(y + yMove + bounds.y + bounds.height) / Tile.TILEHEIGHT;
+			
+			if(!collisionWithTile((int) (x + bounds.x) / Tile.TILEWIDTH, ty) &&
+			!collisionWithTile((int) (x + bounds.x + bounds.width) / Tile.TILEWIDTH, ty)){
+				y+=yMove;
+			}
+		}
+	}
+	
+	protected boolean collisionWithTile(int x, int y){
+		return handler.getWorld().getTile(x, y).isSolid();
 	}
 
 	//GETTERS AND SETTERS

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import Entities.Creatures.Player;
 import Main.Game;
+import Main.Handler;
 import Worlds.World;
 
 public class GameState extends State{
@@ -11,10 +12,11 @@ public class GameState extends State{
 	private Player player;
 	private World world;
 	
-	public GameState(Game game){
-		super(game);
-		player = new Player(game,100,100);
-		world = new World(game, "res/worlds/world1.lvl");
+	public GameState(Handler handler){
+		super(handler);
+		world = new World(handler, "res/worlds/world1.lvl");
+		handler.setWorld(world);
+		player = new Player(handler,100,100);
 		
 		
 	}
