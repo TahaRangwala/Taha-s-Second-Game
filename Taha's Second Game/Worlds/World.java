@@ -2,8 +2,10 @@ package Worlds;
 
 import java.awt.Graphics;
 
-import Main.Game;
 import Main.Handler;
+import Entities.EntityManager;
+import Entities.Creatures.Player;
+import Entities.Statics.Tree;
 import Tiles.Tile;
 import Utils.Utils;
 
@@ -13,21 +15,32 @@ public class World {
 	private int width, height;
 	private int spawnX, spawnY;
 	private int[][] tiles;
+	//Entities
+	private EntityManager entityManager;
 	
 	public World(Handler handler, String path){
 		this.handler = handler;
+		entityManager = new EntityManager(handler, new Player(handler, 100, 100));
+		// Temporary entity code!
+		entityManager.addEntity(new Tree(handler, 100, 250));
+		entityManager.addEntity(new Tree(handler, 100, 450));
+		entityManager.addEntity(new Tree(handler, 100, 650));
+		
 		loadWorld(path);
+		
+		entityManager.getPlayer().setX(spawnX);
+		entityManager.getPlayer().setY(spawnY);
 	}
 	
 	public void tick(){
-		
+		entityManager.tick();
 	}
 	
 	public void render(Graphics g){
-		int xStart = (int) Math.max(0, handler.getGameCamera().getxOffset()/Tile.TILEWIDTH), 
-		xEnd = (int) Math.min(width, (handler.getGameCamera().getxOffset() + handler.getWidth()) / Tile.TILEWIDTH + 1), 
-		yStart = (int) Math.max(0, handler.getGameCamera().getyOffset()/Tile.TILEHEIGHT), 
-		yEnd = (int) Math.min(height, (handler.getGameCamera().getyOffset() + handler.getHeight()) / Tile.TILEHEIGHT + 1);
+		int xStart = (int) Math.max(0, handler.getGameCamera().getxOffset() / Tile.TILEWIDTH);
+		int xEnd = (int) Math.min(width, (handler.getGameCamera().getxOffset() + handler.getWidth()) / Tile.TILEWIDTH + 1);
+		int yStart = (int) Math.max(0, handler.getGameCamera().getyOffset() / Tile.TILEHEIGHT);
+		int yEnd = (int) Math.min(height, (handler.getGameCamera().getyOffset() + handler.getHeight()) / Tile.TILEHEIGHT + 1);
 		
 		for(int y = yStart;y < yEnd;y++){
 			for(int x = xStart;x < xEnd;x++){
@@ -35,6 +48,8 @@ public class World {
 						(int) (y * Tile.TILEHEIGHT - handler.getGameCamera().getyOffset()));
 			}
 		}
+		//Entities
+		entityManager.render(g);
 	}
 	
 	public Tile getTile(int x, int y){
@@ -69,6 +84,10 @@ public class World {
 	
 	public int getHeight(){
 		return height;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
 	}
 	
 }
