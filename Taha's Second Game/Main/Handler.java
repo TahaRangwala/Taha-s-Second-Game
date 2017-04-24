@@ -1,6 +1,7 @@
 package Main;
 
 import Input.KeyManager;
+import Input.MouseManager;
 import Worlds.World;
 import gfx.GameCamera;
 
@@ -11,6 +12,10 @@ public class Handler {
 	
 	public Handler(Game game){
 		this.game = game;
+	}
+	
+	public MouseManager getMouseManager(){
+		return game.getMouseManager();
 	}
 	
 	public GameCamera getGameCamera(){
