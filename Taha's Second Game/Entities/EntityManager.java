@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import Entities.Creatures.Player;
 import Main.Handler;
@@ -32,9 +33,12 @@ public class EntityManager {
 	}
 	
 	public void tick(){
-		for(int i = 0; i < entities.size(); i++){
-			Entity e = entities.get(i);
+		Iterator<Entity> it = entities.iterator();
+		while(it.hasNext()){
+			Entity e = it.next();
 			e.tick();
+			if(!e.isActive())
+				it.remove();
 		}
 		Collections.sort(entities,renderSorter);
 	}

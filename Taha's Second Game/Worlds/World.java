@@ -2,10 +2,12 @@ package Worlds;
 
 import java.awt.Graphics;
 
-import Main.Handler;
 import Entities.EntityManager;
 import Entities.Creatures.Player;
+import Entities.Statics.Rock;
 import Entities.Statics.Tree;
+import Items.ItemManager;
+import Main.Handler;
 import Tiles.Tile;
 import Utils.Utils;
 
@@ -18,13 +20,16 @@ public class World {
 	//Entities
 	private EntityManager entityManager;
 	
+	//Items
+	private ItemManager itemManager;
+	
 	public World(Handler handler, String path){
 		this.handler = handler;
 		entityManager = new EntityManager(handler, new Player(handler, 100, 100));
+		itemManager = new ItemManager(handler);
 		// Temporary entity code!
 		entityManager.addEntity(new Tree(handler, 100, 250));
-		entityManager.addEntity(new Tree(handler, 100, 450));
-		entityManager.addEntity(new Tree(handler, 100, 650));
+		entityManager.addEntity(new Rock(handler, 100, 450));
 		
 		loadWorld(path);
 		
@@ -33,6 +38,7 @@ public class World {
 	}
 	
 	public void tick(){
+		itemManager.tick();
 		entityManager.tick();
 	}
 	
@@ -48,10 +54,29 @@ public class World {
 						(int) (y * Tile.TILEHEIGHT - handler.getGameCamera().getyOffset()));
 			}
 		}
+		
+		//Items
+		itemManager.render(g);
 		//Entities
 		entityManager.render(g);
 	}
 	
+	public Handler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
+	}
+
+	public ItemManager getItemManager() {
+		return itemManager;
+	}
+
+	public void setItemManager(ItemManager itemManager) {
+		this.itemManager = itemManager;
+	}
+
 	public Tile getTile(int x, int y){
 		if(x < 0 || y < 0 || x >= width || y >= height)
 			return Tile.grassTile;
