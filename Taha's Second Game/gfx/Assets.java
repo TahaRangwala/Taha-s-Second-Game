@@ -12,7 +12,7 @@ public class Assets {
 	public static BufferedImage[] btn_start;
 
 	public static void init(){
-		SpriteSheet sheet = new SpriteSheet(ImageLoader.loadImage("/textures/sheet.png"));
+		SpriteSheet sheet = new SpriteSheet(ImageLoader.loadImage("/textures/Game Sprite Sheet.jpg"));
 		
 		wood = sheet.crop(width, height, width, height);
 		
